@@ -7,19 +7,18 @@ Vue.component('cards-on-table', {
     `,
     data() {
         return {
-            states: [
-                'empty',
-                'flop',
-                'turn',
-                'river'
-            ],
             currState: 'empty',
             cards: []
         }
     },
     computed: {
         deck() {
-            deckValues = ['2','3','4','5','J','Q','K','A']
+            let deckValues = ['2','3','4','5','6','7','8','9','10','J','Q','K','A']
+            let fullDeck = []
+            deckValues.forEach(e => {
+                fullDeck.push(`${e}C`, `${e}D`, `${e}H`, `${e}S`)
+            });
+            return fullDeck
         }
     },
     methods: {
@@ -28,15 +27,24 @@ Vue.component('cards-on-table', {
         },
         nextState() {
             if (this.currState === 'empty') {
-                this.cards = ['5S', '4D', '2C'];
-                this.currState = 'flop';
+                this.addRandomCard()
+                this.addRandomCard()
+                this.addRandomCard()
+                this.currState = 'flop'
             } else if (this.currState === 'flop') {
-                this.cards.push('3C');
-                this.currState = 'turn';
+                this.addRandomCard()
+                this.currState = 'turn'
             } else if (this.currState === 'turn') {
-                this.cards.push('2H')
+                this.addRandomCard()
                 this.currState = 'river'
             }
+        },
+        addRandomCard() {
+            if (this.deck.length > 0) {
+                let index = Math.floor(Math.random() * Math.floor(this.deck.length))
+                this.cards.push(this.deck.splice(index, 1))
+            }
+            // TODO: Throw error when out of cards
         }
     }
 })
